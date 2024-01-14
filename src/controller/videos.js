@@ -3,7 +3,7 @@ const BrandVideo = require('../model/brandVideoSchema')
 const UserVideo =  require('../model/UserAdVideos')
 
     // Create Mux Video and Data instances
-const { Video } = new Mux(process.env.ACCESS_TOKEN, process.env.SECRET_KEY);
+const { Video } = new Mux(process.env.MUX_ACCESS_TOKEN, process.env.MUX_SECRET_KEY);
 
 
 // const createVideo = async (req, res) => {
