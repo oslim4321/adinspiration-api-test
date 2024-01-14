@@ -1,5 +1,6 @@
-    const Mux = require('@mux/mux-node'); // Import Mux Node SDK
-
+const Mux = require('@mux/mux-node');
+const BrandVideo = require('../model/brandVideoSchema')
+const UserVideo =  require('../model/UserAdVideos')
 
     // Create Mux Video and Data instances
 const { Video } = new Mux(process.env.ACCESS_TOKEN, process.env.SECRET_KEY);
@@ -27,16 +28,25 @@ const createVideo = async (req, res) => {
 };
 
 
+
 const getAllVideos = async (req, res) => {
-        try {
-            const assets = await Video.Assets.list();
-            console.log(assets);
-            res.json(assets);
-        } catch (error) {
-            console.error('Error fetching videos from Mux:', error);
-            res.status(500).json({ message: 'Error fetching videos' });
-        }
-    };
+    try {
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const [brandVideos, userVideos] = await Promise.all([
+            BrandVideo.find().skip(skip).limit(limit), 
+            UserVideo.find().skip(skip).limit(limit)   
+          ]);
+          const result = [...brandVideos, ...userVideos];
+          res.status(200).json(result);
+        console.log(result.length);
+    } catch (error) {
+        console.error('Error fetching videos from Mux:', error);
+        res.status(500).json({ message: 'Error fetching videos' });
+    }
+};
+
 
 module.exports = { getAllVideos, createVideo };
 
