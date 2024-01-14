@@ -5,8 +5,8 @@ const signUpSchema = yup.object().shape({
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),
     location: yup.object().shape({
-        city: yup.string().required('City is required'),
-        country: yup.string().required('Country is required')
+        city: yup.string(),
+        country: yup.string()
     }),
     description: yup.string(),
     pricePerAdVideo: yup.number(),
