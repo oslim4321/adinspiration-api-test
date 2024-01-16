@@ -6,6 +6,7 @@ require('dotenv').config();
 // auth
 const authRoutes = require('./src/route/auth')
 const videoRoutes = require('./src/route/videos')
+const UserDashboard = require('./src/route/userDashboard')
 
 
 
@@ -25,6 +26,7 @@ app.use(cors(corsOptions));
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/video', videoRoutes);
+app.use('/api/v1/dashboard', UserDashboard);
 app.get('/', (req, res) => {
   res.send('Hello Wlcome to adinspiration api!');
 });

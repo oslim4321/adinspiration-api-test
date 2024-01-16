@@ -1,7 +1,7 @@
 const yup = require('yup');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../model/auth');
+const User = require('../model/user');
 const { signUpSchema } = require('../validation');
 
 const generateToken = (userId) => {
@@ -52,8 +52,7 @@ try {
         if (!user) {
             return res.status(404).json({message: 'User not found'});
         }
-        console.log(password);
-        console.log(user.password);
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({message: 'Invalid credentials'});
@@ -69,6 +68,7 @@ const getUser = async(req, res) => {
     const id = req.user
    try {
     const user = await User.findById(id).select('-password')
+    console.log(user);
     if (!user) {
         return res.status(404).json({ message: 'user not found'})
     }
@@ -78,6 +78,26 @@ const getUser = async(req, res) => {
    }
 }
 
+const updateUser = async(req, res) => {
+    try {
+        const userId = req.params.user;
+        const {  city, country, description, pricePerAdVideo, socialLinks, profilePhoto } = req.body;
+        const updatedData = {city, country, description, pricePerAdVideo, socialLinks, profilePhoto }
+        const updatedUserDetails = await User.findByIdAndUpdate(userId, updatedData, { new: true });
+
+        if (!updatedUserDetails) {
+            return res.status(404).json({message: 'User not found'});
+        }
+
+        res.status(200).json({message:updatedUserDetails});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({error});
+    }
+}
 
 
-module.exports = {signUpUser, loginUser, getUser};
+
+
+
+module.exports = {signUpUser, loginUser, getUser, updateUser};

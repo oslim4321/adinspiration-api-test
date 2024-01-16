@@ -22,4 +22,29 @@ const verifyToken = (req, res, next) => {
     next();
 };
 
-module.exports = { verifyToken };
+
+const verifyAuthorization = (req, res, next) => {
+   
+    verifyToken(req, res, () => {
+
+        console.log(req.user);
+        console.log(req.params.user);
+        if (req.user.role === 'admin' || req.user === req.params.user) {
+            next();
+        } else {
+            return res.status(403).json({ message: 'Access denied. User not authorized.' });
+        }
+    });
+};
+
+const verifyAdmin = (req, res, next) => {
+    verifyToken(req, res, () => {
+        if (req.user.role === 'admin') {
+            next();
+        } else {
+            return res.status(403).json({ message: 'Access denied. Only admins are allowed.' });
+        }
+    });
+};
+
+module.exports = { verifyToken, verifyAuthorization,verifyAdmin };
